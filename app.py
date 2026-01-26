@@ -5,7 +5,7 @@ from reportlab.pdfgen import canvas
 from io import BytesIO
 
 # --- CONFIGURAZIONE API ---
-API_KEY = "INSERISCI_QUI_LA_TUA_CHIAVE"
+API_KEY = "AIzaSyDdtXwItbX0uGK9OjPLIbvuiaMsiIPeHBw"
 gmaps = googlemaps.Client(key=API_KEY)
 
 # --- CONFIGURAZIONE PAGINA ---
@@ -152,3 +152,4 @@ if dest_input:
 
     except Exception:
         st.error("Inserisci un indirizzo valido per calcolare il percorso.")
+
