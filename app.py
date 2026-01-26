@@ -3,7 +3,7 @@ import googlemaps
 
 # --- CONFIGURAZIONE API ---
 # Se metti l'app online, ti spiegherò come nascondere questa chiave nei "Secrets"
-API_KEY = "INSERISCI_QUI_LA_TUA_CHIAVE"
+API_KEY = "AIzaSyDdtXwItbX0uGK9OjPLIbvuiaMsiIPeHBw"
 gmaps = googlemaps.Client(key=API_KEY)
 
 # --- CONFIGURAZIONE PAGINA ---
@@ -137,3 +137,4 @@ if st.button("📄 Genera Riepilogo per Cliente"):
     *TOTALE: {totale:.2f}€*
     """
     st.text_area("Copia questo testo:", riepilogo, height=200)
+
