@@ -7,7 +7,7 @@ from PIL import Image
 import os
 
 # --- CONFIGURAZIONE API ---
-API_KEY = "AIzaSyDdtXwItbX0uGK9OjPLIbvuiaMsiIPeHBw"
+API_KEY = st.secrets["MAPS_KEY"]
 gmaps = googlemaps.Client(key=API_KEY)
 
 # --- CONFIGURAZIONE PAGINA ---
@@ -165,3 +165,4 @@ if dest_input:
 
     except:
         st.warning("In attesa di un indirizzo di destinazione valido...")
+
