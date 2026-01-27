@@ -29,7 +29,7 @@ def genera_ricevuta_completa(d):
 
     # PAGINA 1: PREVENTIVO
     try:
-        p.drawImage("logo_yammo.png", 50, h - 75, width=150, preserveAspectRatio=True, mask='auto')
+        p.drawImage("logo yammo sito white.png", 50, h - 75, width=150, preserveAspectRatio=True, mask='auto')
     except:
         p.setFont("Helvetica-Bold", 18)
         p.drawString(50, h - 50, "YAMMO.IT")
@@ -102,4 +102,95 @@ def genera_ricevuta_completa(d):
     # Note per il corriere
     p.rect(50, 120, 490, 80)
     p.setFont("Helvetica-Bold", 10)
+    p.drawString(60, 185, "NOTE PER IL CORRIERE:")
+    p.setFont("Helvetica", 9)
+    # Gestione testo su più righe per le note
+    text_note = p.beginText(60, 170)
+    text_note.textLines(d['note'])
+    p.drawText(text_note)
+    
+    p.setFont("Helvetica", 10)
+    p.drawString(50, 80, "DATA: ____/____/_______")
+    p.drawString(50, 40, "Firma Corriere: _________________")
+    p.drawString(340, 40, "Firma Cliente: _________________")
 
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    return buffer
+
+# --- INTERFACCIA STREAMLIT ---
+try:
+    st.image("logo yammo sito white.png", width=300)
+except:
+    st.title("YAMMO.IT")
+
+with st.sidebar:
+    st.header("👤 Operatore")
+    op_nome = st.text_input("Nome Operatore", value="Operatore Yammo")
+    sede_scelta = st.selectbox("🏢 Sede Yammo", list(SEDI_YAMMO.keys()))
+    partenza_addr = SEDI_YAMMO[sede_scelta]
+
+st.subheader("📝 Dati Cliente e Destinazione")
+c_n, c_c = st.columns(2)
+with c_n: nome_cl = st.text_input("Nome")
+with c_c: cognome_cl = st.text_input("Cognome")
+tel_cl = st.text_input("Telefono")
+dest_addr = st.text_input("📍 Indirizzo di Consegna")
+note_libere = st.text_area("🗒️ Note per il corriere (es. citofono, orari, difficoltà)", placeholder="Scrivi qui eventuali note...")
+
+st.divider()
+
+# Inizializzazione variabili per evitare errori di definizione
+dist_km, costo_trasp, c_piano, c_inst, c_smalt, totale_servizi, acconto, saldo = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+inst_cat, pag_stato = "Nessuna", "Da Pagare"
+
+if dest_addr:
+    try:
+        res = gmaps.distance_matrix(partenza_addr, dest_addr, mode='driving', language='it')
+        if res['rows'][0]['elements'][0]['status'] == 'OK':
+            dist_km = res['rows'][0]['elements'][0]['distance']['value'] / 1000
+            costo_trasp = 15.0 if dist_km <= 10 else dist_km * 1.50
+            st.success(f"Distanza calcolata: {dist_km:.2f} km")
+        else:
+            st.warning("Indirizzo non raggiungibile via terra.")
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write("**Opzioni Consegna**")
+            p_sel = st.radio("Piano:", ["Strada (0€)", "No Ascensore (+25€)", "Si Ascensore (+15€)"])
+            c_piano = 25.0 if "No" in p_sel else 15.0 if "Si" in p_sel else 0.0
+            
+            st.write("**Installazione**")
+            inst_cat = st.selectbox("Tipo:", ["Nessuna", "Libera (30€)", "Incasso Frigo (70€)", "Incasso Lavastoviglie (60€)", "Incasso Forno (50€)", "TV base (15€)", "TV + Staffa (40€)", "Piano Metano/Induzione (60€)", "Piano GPL (70€)"])
+            prezzi_mappa = {"Nessuna":0, "Libera (30€)":30, "Incasso Frigo (70€)":70, "Incasso Lavastoviglie (60€)":60, "Incasso Forno (50€)":50, "TV base (15€)":15, "TV + Staffa (40€)":40, "Piano Metano/Induzione (60€)":60, "Piano GPL (70€)":70}
+            c_inst = float(prezzi_mappa.get(inst_cat, 0))
+
+        with col2:
+            st.write("**Smaltimento**")
+            s_sel = st.radio("Ritiro RAEE:", ["No (0€)", "Al piano (+15€)"])
+            c_smalt = 15.0 if "piano" in s_sel.lower() else 0.0
+            
+            st.write("**Pagamento**")
+            pag_stato = st.selectbox("Stato:", ["Da Pagare", "Acconto Versato", "Saldato in Negozio"])
+            totale_servizi = costo_trasp + c_piano + c_smalt + c_inst
+            acconto = st.number_input("Acconto versato (€):", min_value=0.0, value=0.0, step=5.0)
+            saldo = totale_servizi - acconto
+
+        st.divider()
+        st.metric("SALDO DA PAGARE AL CORRIERE", f"{saldo:.2f} €", delta=f"Totale: {totale_servizi:.2f}€", delta_color="inverse")
+
+        dati_pdf = {
+            "operatore": op_nome, "sede_nome": sede_scelta, "nome": nome_cl, "cognome": cognome_cl,
+            "telefono": tel_cl, "destinazione": dest_addr, "km": dist_km, "c_trasporto": costo_trasp,
+            "c_piano": c_piano, "c_smalt": c_smalt, "c_inst": c_inst, "label_inst": inst_cat,
+            "totale": totale_servizi, "acconto": acconto, "saldo": saldo, "stato_pagamento": pag_stato,
+            "note": note_libere
+        }
+
+        st.download_button(label="🖨️ SCARICA MODULO E RICEVUTA", data=genera_ricevuta_completa(dati_pdf), file_name=f"Yammo_{cognome_cl}.pdf", mime="application/pdf", use_container_width=True)
+            
+    except Exception as e:
+        st.error(f"Dettaglio Errore: {e}")
+else:
+    st.info("💡 Inserisci l'indirizzo per attivare il calcolo.")
