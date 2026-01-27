@@ -111,8 +111,8 @@ if dest_addr:
             p_sel = st.radio("🏠 Piano:", ["Strada (0€)", "Al Piano, No Ascensore (+25€)", "Si al Piano, Con Ascensore (+15€)"])
             c_piano = 25.0 if "No" in p_sel else 15.0 if "Si" in p_sel else 0.0
             
-            inst_cat = st.selectbox("🛠️ Installazione:", ["Nessuna", "Libera (30€)", "Incasso Frigo (70€)", "Incasso Lavastoviglie (60€)", "Incasso Forno (50€)", "TV base (15€)", "TV + Staffa (40€)", "Piano Metano/Induzione (60€)", "Piano GPL (70€)"])
-            prezzi_mappa = {"Nessuna":0, "Libera (30€)":30, "Incasso Frigo (70€)":70, "Incasso Lavastoviglie (60€)":60, "Incasso Forno (50€)":50, "TV base (15€)":15, "TV + Staffa (40€)":40, "Piano Metano/Induzione (60€)":60, "Piano GPL (70€)":70}
+            inst_cat = st.selectbox("🛠️ Installazione:", ["Nessuna", "Libera Installazione (30€)", "Incasso Frigo (70€)", "Lavatrice (40€)", "Incasso Lavastoviglie (60€)", "Incasso Forno (50€)", "TV base (15€)", "TV + Staffa (40€)", "Piano Metano/Induzione (60€)", "Piano GPL (70€)"])
+            prezzi_mappa = {"Nessuna":0, "Libera Installazione (30€)":30, "Incasso Frigo (70€)":70, "Lavatrice (40€)":40, "Incasso Lavastoviglie (60€)":60, "Incasso Forno (50€)":50, "TV base (15€)":15, "TV + Staffa (40€)":40, "Piano Metano/Induzione (60€)":60, "Piano GPL (70€)":70}
             c_inst = float(prezzi_mappa.get(inst_cat, 0))
 
         with col2:
@@ -155,6 +155,7 @@ if dest_addr:
                 "c_piano": c_piano, "c_smalt": c_smalt, "c_inst": c_inst, "label_inst": inst_cat,
                 "prodotto_nome": prod_nome, "prezzo_prodotto": prezzo_prod,
                 "totale_lordo": totale_lordo, "acconto": acconto, "saldo_finale": saldo_finale, "note": note_libere
+                "note": note_libere if note_libere else "" # Se vuoto, passiamo stringa vuota
             }
 
             st.download_button("🖨️ STAMPA MODULO", data=genera_ricevuta_completa(d_pdf), file_name=f"Yammo_{cognome_cl}.pdf", mime="application/pdf", use_container_width=True)
@@ -163,6 +164,7 @@ if dest_addr:
         st.error("Errore nel calcolo. Controlla l'indirizzo.")
 else:
     st.info("💡 Inserisci l'indirizzo per vedere i km e il costo.")
+
 
 
 
