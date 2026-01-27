@@ -116,7 +116,7 @@ if dest_addr:
             c_inst = float(prezzi_mappa.get(inst_cat, 0))
 
         with col2:
-            s_sel = st.radio("♻️ Ritiro RAEE:", ["No", ,"Si, su strada", "Al piano (+15€)"])
+            s_sel = st.radio("♻️ Ritiro RAEE:", ["No", "Si, su strada", "Al piano (+15€)"])
             c_smalt = 15.0 if "piano" in s_sel.lower() else 0.0
             
             totale_servizi = costo_trasp + c_piano + c_smalt + c_inst
@@ -163,4 +163,5 @@ if dest_addr:
         st.error("Errore nel calcolo. Controlla l'indirizzo.")
 else:
     st.info("💡 Inserisci l'indirizzo per vedere i km e il costo.")
+
 
