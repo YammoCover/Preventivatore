@@ -108,7 +108,7 @@ if dest_addr:
 
         col1, col2 = st.columns(2)
         with col1:
-            p_sel = st.radio("🏠 Piano:", ["Strada (0€)", "No Ascensore (+25€)", "Si Ascensore (+15€)"])
+            p_sel = st.radio("🏠 Piano:", ["Strada (0€)", "Al Piano, Senza Ascensore (+25€)", "Al Piano, Con Ascensore (+15€)"])
             c_piano = 25.0 if "No" in p_sel else 15.0 if "Si" in p_sel else 0.0
             
             inst_cat = st.selectbox("🛠️ Installazione:", ["Nessuna", "Libera (30€)", "Incasso Frigo (70€)", "Incasso Lavastoviglie (60€)", "Incasso Forno (50€)", "TV base (15€)", "TV + Staffa (40€)", "Piano Metano/Induzione (60€)", "Piano GPL (70€)"])
@@ -116,7 +116,7 @@ if dest_addr:
             c_inst = float(prezzi_mappa.get(inst_cat, 0))
 
         with col2:
-            s_sel = st.radio("♻️ Ritiro RAEE:", ["No", "Al piano (+15€)"])
+            s_sel = st.radio("♻️ Ritiro RAEE:", ["No", ,"Si, su strada", "Al piano (+15€)"])
             c_smalt = 15.0 if "piano" in s_sel.lower() else 0.0
             
             totale_servizi = costo_trasp + c_piano + c_smalt + c_inst
@@ -163,3 +163,4 @@ if dest_addr:
         st.error("Errore nel calcolo. Controlla l'indirizzo.")
 else:
     st.info("💡 Inserisci l'indirizzo per vedere i km e il costo.")
+
