@@ -3,3 +3,5 @@ googlemaps
 streamlit
 
 reportlab
+
+pillow
