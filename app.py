@@ -147,7 +147,7 @@ if dest_addr:
                 saldo_finale = totale_lordo - acconto
 
             st.metric("SALDO DA INCASSARE", f"{saldo_finale:.2f} €")
-            note_libere = st.text_area("Note Corriere")
+            note_libere = st.text_area("Note per il corriere (es. citofono, orari, difficoltà")
 
             d_pdf = {
                 "operatore": op_nome, "sede_nome": sede_scelta, "nome": nome_cl, "cognome": cognome_cl,
@@ -155,7 +155,7 @@ if dest_addr:
                 "c_piano": c_piano, "c_smalt": c_smalt, "c_inst": c_inst, "label_inst": inst_cat,
                 "prodotto_nome": prod_nome, "prezzo_prodotto": prezzo_prod,
                 "totale_lordo": totale_lordo, "acconto": acconto, "saldo_finale": saldo_finale, "note": note_libere
-                "note": note_libere if note_libere else "" # Se vuoto, passiamo stringa vuota
+                "note": note_libere if note_libere else "Nessuna Nota Inserita"
             }
 
             st.download_button("🖨️ STAMPA MODULO", data=genera_ricevuta_completa(d_pdf), file_name=f"Yammo_{cognome_cl}.pdf", mime="application/pdf", use_container_width=True)
@@ -164,6 +164,7 @@ if dest_addr:
         st.error("Errore nel calcolo. Controlla l'indirizzo.")
 else:
     st.info("💡 Inserisci l'indirizzo per vedere i km e il costo.")
+
 
 
 
