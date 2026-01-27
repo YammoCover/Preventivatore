@@ -154,8 +154,8 @@ if dest_addr:
                 "telefono": tel_cl, "destinazione": dest_addr, "km": dist_km, "c_trasporto": costo_trasp,
                 "c_piano": c_piano, "c_smalt": c_smalt, "c_inst": c_inst, "label_inst": inst_cat,
                 "prodotto_nome": prod_nome, "prezzo_prodotto": prezzo_prod,
-                "totale_lordo": totale_lordo, "acconto": acconto, "saldo_finale": saldo_finale, "note": note_libere
-                "note": note_libere if note_libere else "Nessuna Nota Inserita"
+                "totale_lordo": totale_lordo, "acconto": acconto, "saldo_finale": saldo_finale, "note": note_libere if note_libere else "Nessuna Nota Inserita"
+        
             }
 
             st.download_button("🖨️ STAMPA MODULO", data=genera_ricevuta_completa(d_pdf), file_name=f"Yammo_{cognome_cl}.pdf", mime="application/pdf", use_container_width=True)
@@ -164,6 +164,7 @@ if dest_addr:
         st.error("Errore nel calcolo. Controlla l'indirizzo.")
 else:
     st.info("💡 Inserisci l'indirizzo per vedere i km e il costo.")
+
 
 
 
