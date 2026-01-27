@@ -29,7 +29,7 @@ def genera_ricevuta_completa(d):
 
     # PAGINA 1: PREVENTIVO
     try:
-        p.drawImage("logo yammo sito white.png", 50, h - 75, width=150, preserveAspectRatio=True, mask='auto')
+        p.drawImage("logo_yammo.png", 50, h - 75, width=150, preserveAspectRatio=True, mask='auto')
     except:
         p.setFont("Helvetica-Bold", 18)
         p.drawString(50, h - 50, "YAMMO.IT")
@@ -102,3 +102,4 @@ def genera_ricevuta_completa(d):
     # Note per il corriere
     p.rect(50, 120, 490, 80)
     p.setFont("Helvetica-Bold", 10)
+
