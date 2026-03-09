@@ -3,7 +3,6 @@ import googlemaps
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from io import BytesIO
-from PIL import Image
 
 # --- CONFIGURAZIONE API ---
 try:
@@ -53,12 +52,11 @@ def genera_ricevuta_completa(d):
     y -= 25
     p.setFont("Helvetica", 11)
     
-    # VOCI DETTAGLIATE RICHIESTE
     voci = [
         (f"Prodotto: {d['prodotto_nome']}", f"{d['prezzo_prodotto']:.2f} €"),
         (f"Trasporto ({d['km']:.2f} km)", f"{d['c_trasporto']:.2f} €"),
         (f"Servizio al Piano: {d['label_piano']}", f"{d['c_piano']:.2f} €"),
-        (f"Smaltimento RAEE: {d['label_raee']}", f"{d['c_smalt']:.2f} €"),
+        (f"Ritiro RAEE: {d['label_raee']}", f"{d['c_smalt']:.2f} €"),
         (f"Installazione: {d['label_inst']}", f"{d['c_inst']:.2f} €")
     ]
     for voce, prezzo in voci:
@@ -149,7 +147,8 @@ if dest_addr:
             c_inst = float(prezzi_mappa.get(inst_cat, 0))
 
         with col2:
-            s_sel = st.radio("♻️ Ritiro RAEE:", ["No", "Al piano (+15€)"])
+            # NUOVE OPZIONI RAEE RICHIESTE
+            s_sel = st.radio("♻️ Ritiro RAEE:", ["No", "Si, su strada (gratis)", "Al piano (+15€)"])
             c_smalt = 15.0 if "piano" in s_sel.lower() else 0.0
             
             totale_servizi = costo_trasp + c_piano + c_smalt + c_inst
@@ -180,12 +179,12 @@ if dest_addr:
 
             note_libere = st.text_area("Note per il corriere")
 
-            # MAPPAZIONE DATI FINALE
+            # MAPPAZIONE DATI FINALE PER IL PDF
             d_pdf = {
                 "operatore": op_nome, "sede_nome": sede_scelta, "nome": nome_cl, "cognome": cognome_cl,
                 "telefono": tel_cl, "destinazione": dest_addr, "km": dist_km, "c_trasporto": costo_trasp,
-                "c_piano": c_piano, "label_piano": p_sel, # AGGIUNTA LABEL
-                "c_smalt": c_smalt, "label_raee": s_sel,   # AGGIUNTA LABEL
+                "c_piano": c_piano, "label_piano": p_sel,
+                "c_smalt": c_smalt, "label_raee": s_sel,
                 "c_inst": c_inst, "label_inst": inst_cat,
                 "prodotto_nome": prod_nome, "prezzo_prodotto": prezzo_prod,
                 "totale_lordo": totale_lordo, "acconto": acconto, "saldo_finale": saldo_finale, 
